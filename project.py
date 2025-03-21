@@ -209,6 +209,7 @@ def change_path_label(shortest_path, shortest_path_length):
 def find_shortest_path():
     must_visit_nodes = [node for node, var in must_visit.items() if var.get()]
     shortest_path = []
+    global shortest_path_length
     shortest_path_length = 0
     last_visited_node = None
     if must_visit_nodes:
@@ -322,8 +323,6 @@ def calculate_eta():
         speed = float(speed_entry.get())
         if speed <= 0:
             raise ValueError("Speed must be greater than 0.")
-        shortest_path = nx.shortest_path(G, combo_box_start.get(), combo_box_end.get(), weight="weight")
-        shortest_path_length = nx.shortest_path_length(G, combo_box_start.get(), combo_box_end.get(), weight="weight")
         eta = shortest_path_length / speed
         minutes = eta * 60
         eta_label.config(text=f"Estimated Time of Arrival (ETA): {minutes:.2f} minutes")
