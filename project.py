@@ -1,30 +1,5 @@
 # 1. นาย ณพนันท์ ศรีเกื้อกลิ่น 6706022510204 , 2. นาย ศุภกร สิริเกื้อกูลชัย 6706022510174 , 3. นาย เจตริล เจริญทอง 6706022510425
-# speed eta 
-# ความเร็วเฉลี่ยของแต่ละเส้นทาง
 
-# ค่าต้นทุน ค่าน้ำมัน
-
-#ระยะทางระหว่างอำเภอในจังหวัดปราจีนบุรี 7 อำเภอ
-# 1. เมืองปราจีนบุรี
-# 2. นาดี
-# 3. กบินทร์บุรี
-# 4. ประจันตคาม
-# 5. บ้านสร้าง
-# 6. ศรีมโหสถ
-# 7. ศรีมหาโพธิ
-
-# nodes_th = [
-#     "เมืองปราจีนบุรี", "นาดี", "กบินทร์บุรี", "ประจันตคาม",
-#     "บ้านสร้าง", "ศรีมโหสถ", "ศรีมหาโพธิ",
-# ]
-
-# nodes_road = [
-#     "route 3481", "ทางหลวงชนบท ปราจีนบุรี 2033", "route 319",
-#     "route 3079", "ปจ. 5026", "ทางหลวงแผ่นดินหมายเลข 3452",
-#     "ทางหลวงแผ่นดินหมายเลข 3290", "ถ.กบินทร์บุรี", "route 33",
-#     "โยธาธิการ", "กบินทร์บุรี - ฉะเชิงเทรา ถนน/ถนน ฉะเชิงเทรา - กบินทร์บุรี/AH19",
-#     "route 3076", "ปจ.4014", "ปจ.3070", "route 3078"
-# ]
 #ระยะทางระหว่างอำเภอต่างๆที่เชื่อมกัน
 # อำเภอเมือง ติดกับ บ้านสร้าง, ศรีมโหสถ, ศรีมหาโพธิ, ประจันตคาม   
 # อำเภอเมือง ไป บ้านสร้าง
@@ -101,35 +76,6 @@
 # อำเภอศรีมหาโพธิ ไป ศรีมโหสถ
 # Route 3078 21.9 km
 # ปจ.3070 27.3 km
-
-
-# G.add_edge("Muang Prachinburi", "Ban Sang", weight=30.7)
-# G.add_edge("Muang Prachinburi", "Alt. M.Prachin - B.Sang", weight = 28.8 / 2)
-# G.add_edge("Alt. M.Prachin - B.Sang", "Ban Sang", weight = 28.8 / 2)  
-# G.add_edge("Muang Prachinburi", "Si Mahosot", weight=24.8)
-# G.add_edge("Muang Prachinburi", "Si Maha Phot", weight=30.9)
-# G.add_edge("Muang Prachinburi", "Prachantakham", weight=34)
-# G.add_edge("Muang Prachinburi", "Alt. M.Prachin - P.Takham", weight = 34.4 / 2)
-# G.add_edge("Alt. M.Prachin - P.Takham", "Prachantakham", weight = 34.4 / 2)
-# G.add_edge("Na Di", "Kabin Buri", weight=54.5)
-# G.add_edge("Na Di", "Alt. N.Di - K.Buri", weight = 58 / 2)
-# G.add_edge("Alt. N.Di - K.Buri", "Kabin Buri", weight = 58 / 2)
-# G.add_edge("Na Di", "Prachantakham", weight=74.5)
-# G.add_edge("Na Di", "Alt. N.Di - P.Takham", weight = 72 / 2)
-# G.add_edge("Alt. N.Di - P.Takham", "Prachantakham", weight = 72 / 2)
-# G.add_edge("Kabin Buri", "Prachantakham", weight=71.2)
-# G.add_edge("Kabin Buri", "Alt. K.Buri - P.Takham", weight = 79.2 / 2)
-# G.add_edge("Alt. K.Buri - P.Takham", "Prachantakham", weight = 79.2 / 2)
-# G.add_edge("Kabin Buri", "Si Maha Phot", weight=38.9)
-# G.add_edge("Prachantakham", "Si Maha Phot", weight=45.4)
-# G.add_edge("Prachantakham", "Alt. P.Takham - S.M.Phot", weight = 59.6 / 2)
-# G.add_edge("Alt. P.Takham - S.M.Phot", "Si Maha Phot", weight = 59.6 / 2)
-# G.add_edge("Ban Sang", "Si Mahosot", weight=30.1)
-# G.add_edge("Ban Sang", "Alt. B.Sang - S.Mosot", weight = 39.2 / 2)
-# G.add_edge("Alt. B.Sang - S.Mosot", "Si Mahosot", weight = 39.2 / 2)
-# G.add_edge("Si Mahosot", "Si Maha Phot", weight=21.9)
-# G.add_edge("Si Mahosot", "Alt. S.Mosot - S.M.Phot", weight = 27.3 / 2)
-# G.add_edge("Alt. S.Mosot - S.M.Phot", "Si Maha Phot", weight = 27.3 / 2)
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -199,7 +145,6 @@ def change_path_label(shortest_path, shortest_path_length):
         shortest_path_label.destroy()
     if 'shortest_path_length_label' in globals():
         shortest_path_length_label.destroy()
-    #if text too long it will be cut for a new line
     shortest_path_label = tk.Label(right_frame, text=f"Shortest Path: {" -> ".join(shortest_path)}")
     shortest_path_label.grid(row=0, column=0)
     shortest_path_length_label = tk.Label(right_frame, text=f"Shortest Path Length: {float(shortest_path_length):.2f} km")
@@ -232,7 +177,6 @@ def find_shortest_path():
     edges = [(shortest_path[i], shortest_path[i + 1]) for i in range(len(shortest_path) - 1)]
     draw_graph(shortest_path, edges)
 
-#draw graph
 def draw_graph(shortest_path=None,edges=None):
     global canvas
     if 'canvas' in globals() and canvas is not None:
@@ -263,7 +207,6 @@ def toggle_alternative_route():
 
 def update_checkboxes():
     global must_visit
-    #clear previous checkboxes
     for widget in must_visit_frame.winfo_children():
         if isinstance(widget, tk.Checkbutton):
             widget.destroy()
@@ -306,13 +249,11 @@ combo_box_end.set("Si Maha Phot")
 find_shortest_path_button = tk.Button(left_frame, text="Find Shortest Path", command=find_shortest_path)
 find_shortest_path_button.grid(row=4, column=0)
 
-#on select disable alternative route
 checkbutton = tk.Checkbutton(left_frame,text="Enable Alternative Route",variable=is_alternative_enable,command=toggle_alternative_route)
 checkbutton.grid(row=5, column=0)
 
 eta_title = tk.Label(left_frame, text="Calculate Estimated Time of Arrival (ETA)")
 eta_title.grid(row=6, column=0)
-# Speed input box
 speed_label = tk.Label(left_frame, text="Enter Speed (km/h):")
 speed_label.grid(row=6, column=0)
 speed_entry = tk.Entry(left_frame)
