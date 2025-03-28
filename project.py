@@ -76,6 +76,8 @@
 # อำเภอศรีมหาโพธิ ไป ศรีมโหสถ
 # Route 3078 21.9 km
 # ปจ.3070 27.3 km
+
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -86,10 +88,13 @@ from tkinter import Canvas
 
 G = nx.Graph()
 
+# ข้อมูลโหนดอำเภอ
 nodes = [
     "Muang Prachinburi", "Na Di", "Kabin Buri", "Prachantakham",
     "Ban Sang", "Si Mahosot", "Si Maha Phot",
 ]
+
+# ข้อมูลโหนดเส้นทางสำรอง
 alternative_nodes = [
     "Alt. M.Prachin - B.Sang",
     "Alt. M.Prachin - P.Takham",
@@ -101,6 +106,7 @@ alternative_nodes = [
     "Alt. S.Mosot - S.M.Phot",
 ]
 
+# ข้อมูลระยะทางระหว่างอำเภอ
 edges = [
     ("Muang Prachinburi", "Ban Sang", 30.7),
     ("Muang Prachinburi", "Si Mahosot", 24.8),
@@ -114,6 +120,8 @@ edges = [
     ("Ban Sang", "Si Mahosot", 30.1),
     ("Si Mahosot", "Si Maha Phot", 21.9),
 ]
+
+# ข้อมูลระยะทางระหว่างอำเภอในเส้นทางสำรอง
 edges_alternative = [
     ("Alt. M.Prachin - B.Sang", "Ban Sang", 28.8 / 2),
     ("Alt. M.Prachin - B.Sang", "Muang Prachinburi", 28.8 / 2),
@@ -135,28 +143,37 @@ edges_alternative = [
 
 must_visit = {}
 
+# เพิ่มข้อมูลโหนดและเส้นทางลงในกราฟ
 G.add_nodes_from(nodes + alternative_nodes)
 G.add_weighted_edges_from(edges)
 G.add_weighted_edges_from(edges_alternative)
 
+
+# ฟังก์ชันสำหรับเปลี่ยนข้อความที่แสดงผลข้างบนกราฟ
 def change_path_label(shortest_path, shortest_path_length):
+    # เช็คว่ามี label แล้วหรือยัง ถ้ามีให้ลบออกก่อน
     global shortest_path_label, shortest_path_length_label
     if 'shortest_path_label' in globals():
         shortest_path_label.destroy()
     if 'shortest_path_length_label' in globals():
         shortest_path_length_label.destroy()
+
+    # สร้าง label ใหม่
     shortest_path_label = tk.Label(right_frame, text=f"Shortest Path: {" -> ".join(shortest_path)}")
     shortest_path_label.grid(row=0, column=0)
     shortest_path_length_label = tk.Label(right_frame, text=f"Shortest Path Length: {float(shortest_path_length):.2f} km")
     shortest_path_length_label.grid(row=1, column=0)
 
-
+# ฟังก์ชันสำหรับค้นหาเส้นทางที่สั้นที่สุด
 def find_shortest_path():
+    #เช็คว่ามีจุดที่ต้องการไปก่อนถึงปลายทางไหมแล้วเก็บในตัวแปร must_visit_nodes
     must_visit_nodes = [node for node, var in must_visit.items() if var.get()]
+
     shortest_path = []
     global shortest_path_length
     shortest_path_length = 0
     last_visited_node = None
+    # เช็คว่ามีจุดที่ต้องการไปก่อนถึงปลายทางไหมถ้ามีให้ไปที่จุดนั้นก่อนแล้วค่อยไปที่ปลายทาง
     if must_visit_nodes:
         for must_visit_node in must_visit_nodes:
             if last_visited_node:
@@ -169,22 +186,33 @@ def find_shortest_path():
         shortest_path += nx.shortest_path(G, last_visited_node, combo_box_end.get(), weight="weight")
         shortest_path_length += nx.shortest_path_length(G, last_visited_node, combo_box_end.get(), weight="weight")
 
+    # ถ้าไม่มีจุดที่ต้องการไปก่อนถึงปลายทางให้ไปที่ปลายทางเลย
     else:
         shortest_path = nx.shortest_path(G, combo_box_start.get(), combo_box_end.get(), weight="weight")
         shortest_path_length = nx.shortest_path_length(G, combo_box_start.get(), combo_box_end.get(), weight="weight")
     shortest_path = [shortest_path[0]] + [shortest_path[i] for i in range(1, len(shortest_path)) if shortest_path[i] != shortest_path[i - 1]]
+
+    # เรียกใช้ฟังก์ชันเปลี่ยนข้อความที่แสดงผลข้างบนกราฟ
     change_path_label(shortest_path, shortest_path_length)
     edges = [(shortest_path[i], shortest_path[i + 1]) for i in range(len(shortest_path) - 1)]
+    # เรียกใช้ฟังก์ชันวาดกราฟ
     draw_graph(shortest_path, edges)
 
+# ฟังก์ชันสำหรับวาดกราฟ
 def draw_graph(shortest_path=None,edges=None):
+    # เช็คว่ามีกราฟอยู่แล้วหรือยัง ถ้ามีให้ลบออกก่อน
     global canvas
     if 'canvas' in globals() and canvas is not None:
         canvas.get_tk_widget().destroy()
+
+    # กำหนดขนาดของกราฟ
     fig = plt.figure(figsize=(10, 5))
+    # กำหนดการแสดงผลของกราฟ
     pos = nx.spring_layout(G, seed=4)
     nx.draw(G, pos, with_labels=True)
     nx.draw_networkx_edges(G, pos, edgelist=edges, edge_color="r", width=2)
+    # กำหนดสีของโหนดโดยใช้สี "lightblue" สำหรับโหนดที่ไม่ผ่าน และ "pink" สำหรับโหนดที่ผ่าน
+    # กำหนดสีของ เส้นทางที่ผ่าน โดยใช้สี "red" สำหรับเส้นทางที่ผ่าน
     if shortest_path:
         node_colors = ["pink" if node in shortest_path else "lightblue" for node in G.nodes()]
         nx.draw_networkx_nodes(G, pos, node_color=node_colors)
@@ -192,11 +220,12 @@ def draw_graph(shortest_path=None,edges=None):
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
         distance_labels = {edge: f"{weight} km" for edge, weight in edge_labels.items()}
         nx.draw_networkx_edge_labels(G, pos, edge_labels=distance_labels)
-
+    # แสดงกราฟบน tkinter
     canvas = FigureCanvasTkAgg(fig, master=right_frame)
     canvas.draw()
     canvas.get_tk_widget().grid(row=2, column=0)
 
+# ฟังก์ชันสำหรับเปิดใช้หรือปิดเส้นทางสำรอง
 def toggle_alternative_route():
     if is_alternative_enable.get():
         G.add_nodes_from(alternative_nodes)
@@ -205,6 +234,9 @@ def toggle_alternative_route():
         G.remove_nodes_from(alternative_nodes)
         G.remove_edges_from(edges_alternative)
 
+# ฟังก์ชันสำหรับอัปเดต checkbox ของจุดที่ต้องการไปก่อนถึงปลายทางเพื่ออัพเดตข้อมูล
+# โดยจะลบ checkbox เก่าออกแล้วสร้าง checkbox ใหม่
+# เพื่อให้แสดงเฉพาะจุดที่ไม่ใช่จุดเริ่มต้นและจุดสิ้นสุด เพราะจุดเริ่มต้นและจุดสิ้นสุดจะถูกเลือกจาก combobox อยู่แล้ว
 def update_checkboxes():
     global must_visit
     for widget in must_visit_frame.winfo_children():
@@ -259,6 +291,7 @@ speed_label.grid(row=6, column=0)
 speed_entry = tk.Entry(left_frame)
 speed_entry.grid(row=7, column=0)
 
+# ฟังก์ชันสำหรับคำนวณ ETA โดยใช้ระยะทางที่สั้นที่สุดและความเร็วที่ผู้ใช้ป้อน
 def calculate_eta():
     try:
         speed = float(speed_entry.get())
